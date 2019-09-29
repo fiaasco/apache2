@@ -7,7 +7,7 @@ The role supports Debian and Ubuntu.
 
 ## Requirements
 
-Certificates are supposed to be in place.
+Certificates are supposed to be in place (possible example in the molecule test preparation).
 
 ## Role Variables
 
