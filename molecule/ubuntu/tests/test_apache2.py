@@ -48,7 +48,7 @@ def test_config(host):
 
     # Test requests
     http_resp = host.run('curl --head http://localhost')
-    assert "Location: https://debian10-apache2" in http_resp.stdout
+    assert "Location: https://ubuntu18-apache2" in http_resp.stdout
     https_resp = host.run('curl --head --insecure https://ubuntu18-apache2')
     assert "200 OK" in https_resp.stdout
     assert "Strict-Transport-Security: max-age=15768000" in https_resp.stdout
