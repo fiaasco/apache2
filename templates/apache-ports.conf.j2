@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+Listen {{ apache2_http_port }}
+
+{% if apache2_https_listener %}
+<IfModule mod_ssl.c>
+    Listen {{ apache2_https_port }}
+</IfModule>
+
+<IfModule mod_gnutls.c>
+    Listen {{ apache2_https_port }}
+</IfModule>
+{% endif %}

@@ -1,0 +1,37 @@
+# {{ ansible_managed }}
+
+<VirtualHost *:{% if inventory_hostname in groups.varnish|default([]) %}8080{% else %}80{% endif %}>
+	ServerAdmin {{ apache2_server_admin }}
+	ServerName {{ inventory_hostname }}
+	ServerAlias {{ ansible_ssh_host }}
+	ServerAlias localhost
+    ServerAlias 127.0.0.1
+
+	DocumentRoot {{ apache2_adminhost_docroot }}
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+	<Directory {{ apache2_adminhost_docroot }}>
+		Options FollowSymLinks
+		AllowOverride None
+                Require all granted
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    {% if apache2_adminhost_http_extra is defined %}
+    {{ apache2_adminhost_http_extra }}
+    {% endif %}
+
+    {% if apache2_adminhost_redirect_https %}
+	RewriteEngine On
+	RewriteRule ^/$	https://{{ inventory_hostname }}$1 [R=301,L]
+    {% endif %}
+</VirtualHost>

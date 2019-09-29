@@ -1,0 +1,25 @@
+---
+galaxy_info:
+  author: Luc Stroobant
+  description: Apache2 server installation
+
+  license: MIT
+
+  min_ansible_version: 2.7
+
+  platforms:
+    - name: Debian
+      version:
+        - 10
+
+    - name: Ubuntu
+      version:
+        - 18
+
+  galaxy_tags:
+    - apache2
+    - apache
+    - httpd
+    - fiaasco
+
+dependencies: []

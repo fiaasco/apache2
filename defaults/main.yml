@@ -1,0 +1,92 @@
+---
+# description: http listen port
+# type: string
+apache2_http_port: 80
+
+# description: https listen port
+# type: string
+apache2_https_port: 443
+
+# description: enable https listener?
+# type: string
+apache2_https_listener: true
+
+# description: server admin e-mail
+# type: string
+apache2_server_admin: not@available.invalid
+
+# description: Enable keepalive
+# choices: ["On", "Off"]
+# type: string
+apache2_keepalive: "On"
+
+# description: keepalive timeout (only relevant if enabled)
+# choices: ["On", "Off"]
+# type: string
+apache2_keepalive_timeout: "2"
+
+# description: add an Alias for acme challenges
+# type: bool
+apache2_acme_alias: true
+
+# description: documentroot for admin vhost
+# type: string
+apache2_adminhost_docroot: /var/www/html
+
+# description: redirect to https on admin vhost
+# type: bool
+apache2_adminhost_redirect_https: true
+
+# description: configure https admin vhost
+# type: bool
+apache2_adminhost_https: true
+
+# description: admin vhost certificate file location
+# type: string
+apache2_adminhost_ssl_cert_file: /etc/ssl/{{ inventory_hostname }}/fullchain.cer
+
+# description: admin vhost certificate key file
+# type: string
+apache2_adminhost_ssl_cert_key: /etc/ssl/{{ inventory_hostname }}/{{ inventory_hostname }}.key
+
+# description: admin vhost extra config
+#              multiline variable that allows to add extra apache config
+# type: string
+# example:
+# apache2_adminhost_http_extra: |
+#   RewriteEngine On
+#   RewriteRule ^/redirect/ https://redirect.targate/redirect/ [R=301,L]
+
+# description: admin vhost extra config
+#              multiline variable that allows to add extra apache config
+# type: string
+# example:
+# apache2_adminhost_http_extra: |
+#   RewriteEngine On
+#   RewriteRule ^/redirect/ https://redirect.targate/redirect/ [R=301,L]
+
+# description: ssl protocols to use
+#              undefine to disable (not required for "modern"/tls 1.3)
+#              redefine value or use one of the predefined sets in vars
+# type: string
+apache2_ssl_protocols: "{{ ssl_protocols_intermediate }}"
+
+# description: ssl ciphers to use
+#              redefine value or use one of the predefined sets in vars
+# type: list
+apache2_ssl_ciphers: "{{ ssl_ciphers_intermediate }}"
+
+# description: apache2 default installed modules to enable
+# type: list
+apache2_modules:
+  - ssl
+  - actions
+  - deflate
+  - rewrite
+  - headers
+  - remoteip
+
+# description: apache2 extra modules to install and enables
+#              use full deb name, eg libapache2-mod-security2
+# type: list
+apache2_extra_modules: []

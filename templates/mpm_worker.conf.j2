@@ -1,0 +1,28 @@
+# {{ ansible_managed }}
+
+# This config is tuned to allow running a fiaasco lamp stack on the server.
+
+<IfModule mpm_worker_module>
+{% if ansible_memtotal_mb <= 1024 %}
+    StartServers              1
+{% else %}
+    StartServers              2
+{% endif %}
+	MinSpareThreads		     25
+	MaxSpareThreads		     75
+	ThreadLimit			     64
+	ThreadsPerChild		     25
+	MaxRequestWorkers	    150
+{% if ansible_memtotal_mb <= 1024 %}
+    MaxClients               25
+{% elif ansible_memtotal_mb <= 3072 %}
+    MaxClients               50
+{% elif ansible_memtotal_mb <= 8192 %}
+    MaxClients               75
+{% else %}
+    MaxClients              150 
+{% endif %}
+	MaxConnectionsPerChild 2000
+</IfModule>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet

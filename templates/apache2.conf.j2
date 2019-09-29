@@ -1,0 +1,78 @@
+# {{ ansible_managed }}
+
+ServerName {{ inventory_hostname }}
+
+DefaultRuntimeDir ${APACHE_RUN_DIR}
+PidFile ${APACHE_PID_FILE}
+
+Timeout 300
+KeepAlive {{ apache2_keepalive }}
+MaxKeepAliveRequests 100
+KeepAliveTimeout {{ apache2_keepalive_timeout }}
+
+User ${APACHE_RUN_USER}
+Group ${APACHE_RUN_GROUP}
+
+HostnameLookups Off
+
+ErrorLog ${APACHE_LOG_DIR}/error.log
+LogLevel warn
+
+IncludeOptional mods-enabled/*.load
+IncludeOptional mods-enabled/*.conf
+
+Include ports.conf
+
+
+<Directory />
+	Options FollowSymLinks
+	AllowOverride None
+	Require all denied
+</Directory>
+
+<Directory /usr/share>
+	AllowOverride None
+	Require all granted
+</Directory>
+
+<Directory /var/www/>
+	Options FollowSymLinks
+	AllowOverride None
+	Require all granted
+</Directory>
+
+{% if apache2_acme_alias %}
+# Use one webroot for all acme challenges
+Alias /.well-known/acme-challenge/ /var/www/acme/.well-known/acme-challenge/
+<Directory "/var/www/acme/.well-known/acme-challenge/">
+    Options None
+    AllowOverride None
+    ForceType text/plain
+    RedirectMatch 404 "^(?!/\.well-known/acme-challenge/[\w-]{43}$)"
+</Directory>
+{% endif %}
+
+
+AccessFileName .htaccess
+<FilesMatch "^\.ht">
+	Require all denied
+</FilesMatch>
+
+
+<IfModule remoteip_module>
+RemoteIPHeader X-Forwarded-For
+RemoteIPInternalProxy 127.0.0.1
+</IfModule>
+LogFormat "%a %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combined_xfwded
+
+LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %O" common
+LogFormat "%{Referer}i -> %U" referer
+LogFormat "%{User-agent}i" agent
+
+
+IncludeOptional conf-enabled/*.conf
+IncludeOptional sites-enabled/*.conf
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet

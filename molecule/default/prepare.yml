@@ -1,0 +1,42 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: install prerequisites to run tests
+      package:
+        name:
+          - ufw
+          - python-cryptography
+          - curl
+        state: present
+
+    - name: enable services
+      service:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      with_items:
+        - ufw
+
+    - name: create cert dir
+      file:
+        path: "/etc/ssl/{{ inventory_hostname }}"
+        state: directory
+
+    - name: Generate an OpenSSL private key.
+      openssl_privatekey:
+        path: "/etc/ssl/{{ inventory_hostname }}/{{ inventory_hostname }}.key"
+
+    - name: Generate an OpenSSL CSR.
+      openssl_csr:
+        path: "/etc/ssl/{{ inventory_hostname }}/{{ inventory_hostname }}.csr"
+        privatekey_path: "/etc/ssl/{{ inventory_hostname }}/{{ inventory_hostname }}.key"
+        common_name: "{{ inventory_hostname }}"
+
+    - name: generate self signed certificate for https vhost
+      openssl_certificate:
+        path: "/etc/ssl/{{ inventory_hostname }}/fullchain.cer"
+        privatekey_path: "/etc/ssl/{{ inventory_hostname }}/{{ inventory_hostname }}.key"
+        csr_path: "/etc/ssl/{{ inventory_hostname }}/{{ inventory_hostname }}.csr"
+        provider: selfsigned

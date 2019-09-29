@@ -1,0 +1,150 @@
+---
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0775"
+  with_items:
+    - /var/www/acme
+    - /var/www/sites
+    - /var/www/html
+
+- name: install apache webserver
+  apt:
+    name:
+      - apache2
+    state: present
+    cache_valid_time: 3600
+    update_cache: true
+  notify: start apache2
+
+- name: configure apache webserver
+  template:
+    src: apache2.conf.j2
+    dest: /etc/apache2/apache2.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart apache2
+
+- name: put modules conf
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/apache2/mods-available/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - ssl.conf
+    - mpm_worker.conf
+  notify: restart apache2
+
+- name: configure ports
+  template:
+    src: apache-ports.conf.j2
+    dest: /etc/apache2/ports.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart apache2
+
+- name: configure security
+  template:
+    src: security.conf
+    dest: /etc/apache2/conf-available/security.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload apache2
+
+- name: make sure mpm prefork and event module are disabled
+  apache2_module:
+    state: absent
+    name: "{{ item }}"
+    ignore_configcheck: true
+  with_items:
+    - mpm_prefork
+    - mpm_event
+  notify: restart apache2
+
+- name: enable mpm_worker
+  apache2_module:
+    state: present
+    name: mpm_worker
+    ignore_configcheck: true
+  notify: restart apache2
+
+- name: enable modules
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ apache2_modules }}"
+  notify: reload apache2
+
+- name: install extra modules
+  apt:
+    name: "{{ apache2_extra_modules }}"
+    state: present
+  when: apache2_extra_modules|length>0
+
+- name: enable extra modules
+  apache2_module:
+    name: "{{ item|replace('libapache2-mod-','') }}"
+    state: present
+  with_items: "{{ apache2_extra_modules }}"
+  when: apache2_extra_modules|length>0
+  notify: reload apache2
+
+- name: overwrite default with empty index.html
+  copy:
+    src: index.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: add our hostname-vhost config
+  template:
+    src: admin-vhost.conf.j2
+    dest: /etc/apache2/sites-available/admin-vhost.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: disable default default site
+  command: a2dissite 000-default
+  args:
+    removes: /etc/apache2/sites-enabled/000-default.conf
+  notify: reload apache2
+
+- name: Enable admin vhost
+  command: a2ensite admin-vhost.conf
+  args:
+    creates: /etc/apache2/sites-enabled/admin-vhost.conf
+  notify: reload apache2
+
+- name: add our hostname-vhost-ssl config
+  template:
+    src: admin-vhost-ssl.conf.j2
+    dest: /etc/apache2/sites-available/admin-vhost-ssl.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload apache2
+  when: apache2_adminhost_https|bool
+
+- name: Enable https admin vhost if required
+  command: a2ensite admin-vhost-ssl.conf
+  args:
+    creates: /etc/apache2/sites-enabled/admin-vhost-ssl.conf
+  when: apache2_adminhost_https|bool
+  notify: reload apache2
+
+- name: Disable https admin vhost if required
+  command: a2dissite admin-vhost-ssl.conf
+  args:
+    removes: /etc/apache2/sites-enabled/admin-vhost-ssl.conf
+  when: not apache2_adminhost_https|bool
+  notify: reload apache2

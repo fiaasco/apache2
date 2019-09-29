@@ -1,0 +1,27 @@
+# {{ ansible_managed }}
+
+<IfModule mod_ssl.c>
+SSLRandomSeed startup builtin
+SSLRandomSeed startup file:/dev/urandom 512
+SSLRandomSeed connect builtin
+SSLRandomSeed connect file:/dev/urandom 512
+
+AddType application/x-x509-ca-cert .crt
+AddType application/x-pkcs7-crl    .crl
+
+SSLPassPhraseDialog     exec:/usr/share/apache2/ask-for-passphrase
+
+SSLSessionCache         shmcb:${APACHE_RUN_DIR}/ssl_scache(512000)
+SSLSessionCacheTimeout  300
+
+SSLProtocol             {{ apache2_ssl_protocols }}
+{% if apache2_ssl_ciphers is defined %}
+SSLCipherSuite          {{ apache2_ssl_ciphers|join(':') }}
+{% endif %}
+SSLHonorCipherOrder     Off
+SSLSessionTickets       Off
+
+SSLUseStapling          On
+SSLStaplingCache        "shmcb:logs/ssl_stapling(32768)"
+
+</IfModule>
