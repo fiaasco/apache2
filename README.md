@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/fiaasco/icinga2-master.svg?branch=master)](https://travis-ci.com/fiaasco/apache2)
+[![Build Status](https://travis-ci.com/fiaasco/apache2.svg?branch=master)](https://travis-ci.com/fiaasco/apache2)
 
 # Ansible Role: Apache2
 
@@ -36,7 +36,6 @@ MIT
 
 ## Further Reading
 
-* (Icinga2 documentation)[https://icinga.com/docs/]
 
 ## Author Information
 
