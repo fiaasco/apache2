@@ -43,11 +43,11 @@ apache2_adminhost_https: true
 
 # description: admin vhost certificate file location
 # type: string
-apache2_adminhost_ssl_cert_file: /etc/ssl/{{ inventory_hostname }}/fullchain.cer
+apache2_adminhost_ssl_cert_file: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
 
 # description: admin vhost certificate key file
 # type: string
-apache2_adminhost_ssl_cert_key: /etc/ssl/{{ inventory_hostname }}/{{ inventory_hostname }}.key
+apache2_adminhost_ssl_cert_key: /etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem
 
 # description: admin vhost extra config
 #              multiline variable that allows to add extra apache config
@@ -57,11 +57,11 @@ apache2_adminhost_ssl_cert_key: /etc/ssl/{{ inventory_hostname }}/{{ inventory_h
 #   RewriteEngine On
 #   RewriteRule ^/redirect/ https://redirect.targate/redirect/ [R=301,L]
 
-# description: admin vhost extra config
+# description: admin https vhost extra config
 #              multiline variable that allows to add extra apache config
 # type: string
 # example:
-# apache2_adminhost_http_extra: |
+# apache2_adminhost_https_extra: |
 #   RewriteEngine On
 #   RewriteRule ^/redirect/ https://redirect.targate/redirect/ [R=301,L]
 
