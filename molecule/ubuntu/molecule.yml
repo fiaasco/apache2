@@ -26,7 +26,7 @@ provisioner:
     group_vars:
       all:
         stage: docker
-        adminhost_ssl: selfsigned
+        apache2_adminhost_https: false
         apache2_extra_modules:
           - libapache2-mod-security2
   lint:
