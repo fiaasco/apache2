@@ -5,23 +5,32 @@ driver:
   name: docker
 scenario:
   name: default
-lint:
-  name: yamllint
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
 platforms:
   - name: debian10-apache2
     image: debian:10
-    command: /sbin/init
+    command: /lib/systemd/systemd
+    privileged: true
+  - name: debian9-apache2
+    image: debian:9
+    command: /lib/systemd/systemd
     privileged: true
 provisioner:
   name: ansible
+  log: true
+  options:
+    vvv: true
   config_options:
     defaults:
       callback_whitelist: profile_tasks
       jinja2_extensions: jinja2.ext.do
       gather_timeout: 30
       timeout: 30
-    ssh_connection:
-      pipelining: true
+      verbosity: 3
   inventory:
     group_vars:
       all:
@@ -29,9 +38,5 @@ provisioner:
         apache2_adminhost_https: false
         apache2_extra_modules:
           - libapache2-mod-security2
-  lint:
-    name: ansible-lint
 verifier:
   name: testinfra
-  lint:
-    name: flake8

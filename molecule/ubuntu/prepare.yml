@@ -23,6 +23,9 @@
       file:
         path: "/etc/ssl/{{ inventory_hostname }}"
         state: directory
+        owner: root
+        group: root
+        mode: "0755"
 
     - name: Generate an OpenSSL private key.
       openssl_privatekey:
