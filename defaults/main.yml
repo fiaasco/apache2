@@ -33,13 +33,13 @@ apache2_acme_alias: true
 # type: string
 apache2_adminhost_docroot: /var/www/html
 
-# description: redirect to https on admin vhost
-# type: bool
-apache2_adminhost_redirect_https: true
-
 # description: configure https admin vhost
 # type: bool
 apache2_adminhost_https: true
+
+# description: redirect to https on admin vhost
+# type: bool
+apache2_adminhost_redirect_https: "{{ apache2_adminhost_https }}"
 
 # description: admin vhost certificate file location
 # type: string
@@ -63,7 +63,7 @@ apache2_adminhost_ssl_cert_key: /etc/letsencrypt/live/{{ inventory_hostname }}/p
 # example:
 # apache2_adminhost_https_extra: |
 #   RewriteEngine On
-#   RewriteRule ^/redirect/ https://redirect.targate/redirect/ [R=301,L]
+#   RewriteRule ^/redirect/ https://redirect.target/redirect/ [R=301,L]
 
 # description: ssl protocols to use
 #              undefine to disable (not required for "modern"/tls 1.3)
