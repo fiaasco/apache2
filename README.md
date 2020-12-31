@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/fiaasco/apache2.svg?branch=master)](https://travis-ci.org/fiaasco/apache2)
+[![Build Status](https://travis-ci.com/fiaasco/apache2.svg?branch=master)](https://travis-ci.org/fiaasco/apache2)
 
 # Ansible Role: Apache2
 
