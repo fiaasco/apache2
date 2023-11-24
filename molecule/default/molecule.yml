@@ -5,25 +5,24 @@ driver:
   name: docker
 scenario:
   name: default
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
 platforms:
-  - name: debian10-apache2
-    image: debian:10
+  - name: debian12-apache2
+    image: debian:12
     command: /lib/systemd/systemd
     privileged: true
-  - name: debian9-apache2
-    image: debian:9
+  - name: debian11-apache2
+    image: debian:11
+    command: /lib/systemd/systemd
+    privileged: true
+  - name: debian10-apache2
+    image: debian:10
     command: /lib/systemd/systemd
     privileged: true
 provisioner:
   name: ansible
   log: true
   options:
-    vvv: true
+    vvv: false
   config_options:
     defaults:
       callback_whitelist: profile_tasks

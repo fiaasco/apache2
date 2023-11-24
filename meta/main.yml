@@ -1,5 +1,7 @@
 ---
 galaxy_info:
+  rolename: apache2
+  namespace: fiaasco
   author: Luc Stroobant
   description: Apache2 server installation
 
@@ -11,10 +13,8 @@ galaxy_info:
     - name: Debian
       version:
         - 10
-
-    - name: Ubuntu
-      version:
-        - 18
+        - 11
+        - 12
 
   galaxy_tags:
     - apache2
