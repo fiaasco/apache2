@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  rolename: apache2
+  role_name: apache2
   namespace: fiaasco
   author: Luc Stroobant
   description: Apache2 server installation
