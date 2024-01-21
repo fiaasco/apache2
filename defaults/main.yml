@@ -85,6 +85,7 @@ apache2_modules:
   - rewrite
   - headers
   - remoteip
+  - http2
 
 # description: apache2 extra modules to install and enables
 #              use full deb name, eg libapache2-mod-security2

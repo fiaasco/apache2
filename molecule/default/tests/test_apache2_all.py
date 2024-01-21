@@ -42,3 +42,4 @@ def test_config(host):
     assert host.file('/etc/apache2/mods-enabled/rewrite.load').exists
     assert host.file('/etc/apache2/mods-enabled/headers.load').exists
     assert host.file('/etc/apache2/mods-enabled/remoteip.load').exists
+    assert host.file('/etc/apache2/mods-enabled/http2.load').exists
